@@ -1,6 +1,3 @@
 ﻿  1.cpp
-D:\SAVE\code\C++\LuoGuPractice\Project1\1.cpp(99,12): warning C4477: “printf”: 格式字符串“%d”需要类型“int”的参数，但可变参数 1 拥有了类型“__int64”
-D:\SAVE\code\C++\LuoGuPractice\Project1\1.cpp(99,12): message : 请考虑在格式字符串中使用“%lld”
-D:\SAVE\code\C++\LuoGuPractice\Project1\1.cpp(99,12): message : 请考虑在格式字符串中使用“%Id”
-D:\SAVE\code\C++\LuoGuPractice\Project1\1.cpp(99,12): message : 请考虑在格式字符串中使用“%I64d”
+D:\SAVE\code\C++\LuoGuPractice\Project1\1.cpp(62,55): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
   Project1.vcxproj -> D:\SAVE\code\C++\LuoGuPractice\Project1\x64\Debug\Project1.exe

@@ -32,38 +32,39 @@ public:
         T array[size];
         int m_count;
         int m_size;
-};
-
-//31.5.21.-*7.+@
-//31.5.21.++@
+}; 
+Array<long long int,5>  class_array_int;
+//6+2*3*4+4
 int main()
 {
-    Array<int, 100>  class_array_char;
-    bool isContinue = false;
-    for (int i = 0; i < class_array_char.m_size; i++)
+    bool isContinue = false,isMultiply = false;
+    long long int result = 0;
+    int m = 10000;
+    for (int i = 0; ; )
     {
         char t;
         scanf("%c", &t);
-        if (t == '.')
+        if (t == EOF || t == '\n')
         {
-            isContinue = false;
-            continue;
-        }
-        if (t == '@')
-        {
-            isContinue = false;
+            if (isMultiply)
+            {
+                long long int int_2 = class_array_int.Pop();
+                long long int int_1 = class_array_int.Pop();
+                class_array_int.Push(int_2 * int_1 % m);
+            }
+            result += class_array_int.Pop();
+            result %= m;
             break;
         }
-        
         if (t >= '0' && t <= '9')
         {
             if (isContinue)
             {
-                class_array_char.Push(class_array_char.Pop()*10 + t - '0');
+                class_array_int.Push(class_array_int.Pop()*10 + t - '0');
             }
             else
             {
-                class_array_char.Push(t - '0');
+                class_array_int.Push(t - '0');
             }
             isContinue = true;
         }
@@ -72,28 +73,30 @@ int main()
             isContinue = false;
             if (t == '+')
             {
-                int int_2 = class_array_char.Pop();
-                int int_1 = class_array_char.Pop();
-                class_array_char.Push(int_1 + int_2);
-            }if (t == '-')
+                if (isMultiply)
+                {
+                    long long int int_2 = class_array_int.Pop();
+                    long long int int_1 = class_array_int.Pop();
+                    class_array_int.Push(int_2 * int_1 % m);
+                }
+                result += class_array_int.Pop();
+                result %= m;
+                isMultiply = false;
+                continue;
+            }
+            if (t == '*')
             {
-                int int_2 = class_array_char.Pop();
-                int int_1 = class_array_char.Pop();
-                class_array_char.Push(int_1 - int_2);
-            }if (t == '*')
-            {
-                int int_2 = class_array_char.Pop();
-                int int_1 = class_array_char.Pop();
-                class_array_char.Push(int_1 * int_2);
-            }if (t == '/')
-            {
-                int int_2 = class_array_char.Pop();
-                int int_1 = class_array_char.Pop();
-                class_array_char.Push(int_1 / int_2);
+                if (isMultiply)
+                {
+                    long long int int_2 = class_array_int.Pop();
+                    long long int int_1 = class_array_int.Pop();
+                    class_array_int.Push(int_2 * int_1 % m);
+                }
+                isMultiply = true;
             }
         }
     }
-    printf("%d", class_array_char.array[0]);
+    printf("%d", result);
     return 0;
 }
 

@@ -1,100 +1,177 @@
 #define _CRT_SECURE_NO_WARNINGS
+#include<cstdio>
 #include <iostream>
 #include <vector>
+#include <algorithm>
 using namespace std;
-int target_score = 11;
-int deltaScore = 2;
-int score_1 = 0,score_2 = 0;
-int roundScore_1 = 0, roundScore_2 = 0;
-vector<char>input;
-int absDelta(int a, int b)
+vector<char>num_1;
+vector<char>num_2;
+void ReverseAndPrint_0()
 {
-    return a > b ? a - b : b - a;
-}
-bool LowDeltaScore()
-{
-    return absDelta(score_1, score_2) < 2;
-}
-void Execute()
-{
-    char t;
-    scanf("%c", &t);
-    input.push_back(t);
-    while (t != EOF)
+    std::reverse(num_1.begin(), num_1.end());
+    if (num_1.size() == 1 && num_1[0] == '0')
     {
-        if (t == '\n')
+        cout << '0';
+    }
+    else
+    {
+        bool find1 = false;
+        int size_init = num_1.size();
+        for (int i = 0, count = 0; count < size_init; i++, count++)
         {
-            scanf("%c", &t);
-            input.push_back(t);
-            continue;
+            if (num_1[i] == '0' && !find1)
+            {
+                num_1.erase(num_1.begin());
+                i--;
+            }
+            else
+            {
+                find1 = true;
+                break;
+            }
         }
-        if (t == 'W')score_1++;
-        if (t == 'L')score_2++;
-        if (t == 'E')
+        for (int i = 0; i < num_1.size(); i++)
         {
-            cout << score_1 << ":" << score_2 << endl;
-            break;
+            cout << num_1[i];
         }
-        if (score_1 < target_score && score_2 < target_score
-            ||
-            ((score_1 >= target_score || score_2 >= target_score) && LowDeltaScore())
-            )
-        {
-        }
-        else
-        {
-            cout << score_1 << ":" << score_2 << endl;
-            score_1 > score_2 ? roundScore_1++ : roundScore_2++;
-            score_1 = score_2 = 0;
-        }
-        scanf("%c", &t);
-        input.push_back(t);
     }
 }
-void Execute_2()
+void ReverseAndPrint_1()
 {
-    char t;
-    t = input[0];
-    input.erase(input.begin());
-    while (t != EOF)
+    if (num_2.size() == 1 && num_2[0] == '0')
     {
-        if (t == '\n')
+        cout << '0';
+        return;
+    }
+    bool find1 = false;
+    int size_init = num_2.size();
+    for (int i = 0, count = 0; count < size_init; i++, count++)
+    {
+        if (num_2[i] == '0' && !find1)
         {
-            t = input[0];
-            input.erase(input.begin());
-            continue;
-        }
-        if (t == 'W')score_1++;
-        if (t == 'L')score_2++;
-        if (t == 'E')
-        {
-            cout << score_1 << ":" << score_2 << endl;
-            break;
-        }
-        if (score_1 < target_score && score_2 < target_score
-            ||
-            ((score_1 >= target_score || score_2 >= target_score) && LowDeltaScore())
-            )
-        {
+            num_2.erase(num_2.begin());
+            i--;
         }
         else
         {
-            cout << score_1 << ":" << score_2 << endl;
-            score_1 > score_2 ? roundScore_1++ : roundScore_2++;
-            score_1 = score_2 = 0;
+            find1 = true;
+            break;
         }
-        t = input[0];
-        input.erase(input.begin());
+    }
+    std::reverse(num_2.begin(), num_2.end());
+    for (int i = 0; i < num_2.size(); i++)
+    {
+        cout << num_2[i];
+    }
+}
+void ReverseAndPrint_2()
+{
+    std::reverse(num_2.begin(), num_2.end());
+    if (num_2.size() == 1 && num_2[0] == '0')
+    {
+        cout << '0';
+    }
+    else
+    {
+        bool find1 = false;
+        int size_init = num_2.size();
+        for (int i = 0, count = 0; count < size_init; i++, count++)
+        {
+            if (num_2[i] == '0' && !find1)
+            {
+                num_2.erase(num_2.begin());
+                i--;
+            }
+            else
+            {
+                find1 = true;
+                break;
+            }
+        }
+        for (int i = 0; i < num_2.size(); i++)
+        {
+            cout << num_2[i];
+        }
     }
 }
 int main()
 {
-    Execute();
-    cout << endl;
-    score_1 = score_2 = 0;
-    roundScore_1 = roundScore_2 = 0;
-    target_score = 21;
-    Execute_2();
+    char t;
+    char speci;
+    int state = 0;
+    t = getchar();
+    int times = 0;
+    while (t != EOF && ((t >= '0' && t <= '9') || t == '.' || t == '/' || t == '%'))
+    {
+        times++;
+        if (times > 100)  return-1;
+        if (t == '.')
+        {
+            speci = t;
+            state = 1;
+            break;
+        }
+        if (t == '/')
+        {
+            speci = t;
+            state = 2;
+            break;
+        }
+        if (t == '%')
+        {
+            speci = t;
+            state = 3;
+            break;
+        }
+        num_1.push_back(t);
+        t = getchar();
+    }
+    ReverseAndPrint_0();
+
+    switch (state)
+    {
+
+    case 0:
+    {
+        break;
+    }
+    case 1:
+    {
+        cout << speci;
+        t = getchar();
+        times = 0;
+        while (t != EOF && t >= '0' && t <= '9')
+        {
+            times++;
+            if (times > 100)  return-1;
+            num_2.push_back(t);
+            t = getchar();
+        }
+        ReverseAndPrint_1();
+        break;
+    }
+    case 2:
+    {
+        cout << speci;
+        t = getchar();
+        times = 0;
+        while (t != EOF && t >= '0' && t <= '9')
+        {
+            times++;
+            if (times > 100)  return-1;
+            num_2.push_back(t);
+            t = getchar();
+        }
+        ReverseAndPrint_2();
+        break;
+    }
+    case 3:
+    {
+        cout << speci;
+        break;
+    }
+    default: break;
+    }
     return 0;
 }
 

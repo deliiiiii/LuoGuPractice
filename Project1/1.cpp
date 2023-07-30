@@ -4,41 +4,24 @@
 #include <algorithm>
 #include <string.h>
 using namespace std;
-int n;
-char tree[1050];
-int p2[11] = { 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024 };
+
+string a, b;
+void DFS(string x, string y) {
+	if (!(int)y.size()) return;
+	int pos = x.find(y[0]);
+	DFS(x.substr(0, pos), y.substr(1, pos));
+	DFS(x.substr(pos + 1), y.substr(pos + 1));
+	cout << y[0];
+}
 int main() 
 {
-    cin >> n; 
-    
-    for (int i = 1; i <= p2[n]; i++) 
-    {
-        char t;
-        cin >> t;
-        tree[i] = t - '0';
-        if (tree[i] == 0)
-            printf("B");
-        else if 
-            (tree[i] == 1)printf("I");
-        else
-            printf("F");
-        for (int k = 1; k < 11; k++)
-        {
-            if (i % p2[k] == 0) 
-            {
-                if (tree[i] != tree[i - p2[k - 1]])
-                    tree[i] = 2;
-                if (tree[i] == 0)
-                    printf("B");
-                else if (tree[i] == 1)
-                    printf("I");
-                else 
-                    printf("F");
-            }
-        }
-    }
-    return 0;
+	cin >> a >> b;
+	DFS(a, b);
+	return 0;
 }
+
+
+
 
 
 

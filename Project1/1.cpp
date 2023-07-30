@@ -4,35 +4,39 @@
 #include <algorithm>
 #include <string.h>
 using namespace std;
-char s2[10];
-char s3[10];
-int len;
-int findIndexInMid(char ch)
+int n;
+char tree[1050];
+int p2[11] = { 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024 };
+int main() 
 {
-    for (int i = 0; i < len; i++)
+    cin >> n; 
+    
+    for (int i = 1; i <= p2[n]; i++) 
     {
-        if (s2[i] == ch) return i;
+        char t;
+        cin >> t;
+        tree[i] = t - '0';
+        if (tree[i] == 0)
+            printf("B");
+        else if 
+            (tree[i] == 1)printf("I");
+        else
+            printf("F");
+        for (int k = 1; k < 11; k++)
+        {
+            if (i % p2[k] == 0) 
+            {
+                if (tree[i] != tree[i - p2[k - 1]])
+                    tree[i] = 2;
+                if (tree[i] == 0)
+                    printf("B");
+                else if (tree[i] == 1)
+                    printf("I");
+                else 
+                    printf("F");
+            }
+        }
     }
-    return -1;
-}
-void dfs(int l1, int r1, int l2, int r2)
-{
-    int m = findIndexInMid(s3[r2]);
-    cout << s3[r2];
-    if (m > l1)
-    {
-        dfs(l1, m - 1, l2, r2 - r1 + m - 1);
-    }
-    if (m < r1)
-    {
-        dfs(m + 1, r1, l2 + m - l1, r2 - 1);
-    }
-}
-int main()
-{
-    cin >> s2 >> s3;
-    len = strlen(s2);
-    dfs(0, len - 1, 0, len - 1);
     return 0;
 }
 

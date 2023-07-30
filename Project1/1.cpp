@@ -1,179 +1,41 @@
 #define _CRT_SECURE_NO_WARNINGS
-#include<cstdio>
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <string.h>
 using namespace std;
-vector<char>num_1;
-vector<char>num_2;
-void ReverseAndPrint_0()
+char s2[10];
+char s3[10];
+int len;
+int findIndexInMid(char ch)
 {
-    std::reverse(num_1.begin(), num_1.end());
-    if (num_1.size() == 1 && num_1[0] == '0')
+    for (int i = 0; i < len; i++)
     {
-        cout << '0';
+        if (s2[i] == ch) return i;
     }
-    else
-    {
-        bool find1 = false;
-        int size_init = num_1.size();
-        for (int i = 0, count = 0; count < size_init; i++, count++)
-        {
-            if (num_1[i] == '0' && !find1)
-            {
-                num_1.erase(num_1.begin());
-                i--;
-            }
-            else
-            {
-                find1 = true;
-                break;
-            }
-        }
-        for (int i = 0; i < num_1.size(); i++)
-        {
-            cout << num_1[i];
-        }
-    }
+    return -1;
 }
-void ReverseAndPrint_1()
+void dfs(int l1, int r1, int l2, int r2)
 {
-    if (num_2.size() == 1 && num_2[0] == '0')
+    int m = findIndexInMid(s3[r2]);
+    cout << s3[r2];
+    if (m > l1)
     {
-        cout << '0';
-        return;
+        dfs(l1, m - 1, l2, r2 - r1 + m - 1);
     }
-    bool find1 = false;
-    int size_init = num_2.size();
-    for (int i = 0, count = 0; count < size_init; i++, count++)
+    if (m < r1)
     {
-        if (num_2[i] == '0' && !find1)
-        {
-            num_2.erase(num_2.begin());
-            i--;
-        }
-        else
-        {
-            find1 = true;
-            break;
-        }
-    }
-    std::reverse(num_2.begin(), num_2.end());
-    for (int i = 0; i < num_2.size(); i++)
-    {
-        cout << num_2[i];
-    }
-}
-void ReverseAndPrint_2()
-{
-    std::reverse(num_2.begin(), num_2.end());
-    if (num_2.size() == 1 && num_2[0] == '0')
-    {
-        cout << '0';
-    }
-    else
-    {
-        bool find1 = false;
-        int size_init = num_2.size();
-        for (int i = 0, count = 0; count < size_init; i++, count++)
-        {
-            if (num_2[i] == '0' && !find1)
-            {
-                num_2.erase(num_2.begin());
-                i--;
-            }
-            else
-            {
-                find1 = true;
-                break;
-            }
-        }
-        for (int i = 0; i < num_2.size(); i++)
-        {
-            cout << num_2[i];
-        }
+        dfs(m + 1, r1, l2 + m - l1, r2 - 1);
     }
 }
 int main()
 {
-    char t;
-    char speci;
-    int state = 0;
-    t = getchar();
-    int times = 0;
-    while (t != EOF && ((t >= '0' && t <= '9') || t == '.' || t == '/' || t == '%'))
-    {
-        times++;
-        if (times > 100)  return-1;
-        if (t == '.')
-        {
-            speci = t;
-            state = 1;
-            break;
-        }
-        if (t == '/')
-        {
-            speci = t;
-            state = 2;
-            break;
-        }
-        if (t == '%')
-        {
-            speci = t;
-            state = 3;
-            break;
-        }
-        num_1.push_back(t);
-        t = getchar();
-    }
-    ReverseAndPrint_0();
-
-    switch (state)
-    {
-
-    case 0:
-    {
-        break;
-    }
-    case 1:
-    {
-        cout << speci;
-        t = getchar();
-        times = 0;
-        while (t != EOF && t >= '0' && t <= '9')
-        {
-            times++;
-            if (times > 100)  return-1;
-            num_2.push_back(t);
-            t = getchar();
-        }
-        ReverseAndPrint_1();
-        break;
-    }
-    case 2:
-    {
-        cout << speci;
-        t = getchar();
-        times = 0;
-        while (t != EOF && t >= '0' && t <= '9')
-        {
-            times++;
-            if (times > 100)  return-1;
-            num_2.push_back(t);
-            t = getchar();
-        }
-        ReverseAndPrint_2();
-        break;
-    }
-    case 3:
-    {
-        cout << speci;
-        break;
-    }
-    default: break;
-    }
+    cin >> s2 >> s3;
+    len = strlen(s2);
+    dfs(0, len - 1, 0, len - 1);
     return 0;
 }
+
 
 
 

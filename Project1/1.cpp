@@ -3,62 +3,37 @@
 #include <vector>
 #include <algorithm>
 #include <string.h>
+
 using namespace std;
-
-const int max_m = 2e5 + 10;
-
-struct node {
-	int x, y, z;
-}edge[max_m];
-
-bool cmp(node a, node b)
+typedef unsigned long long ull;
+ull base = 131;
+ull a[10010];
+char s[10010];
+int n, ans = 1;
+ull mod = 212370440130137957ll;
+ull SetHash(char s[])
 {
-	return a.z < b.z;
+    int len = strlen(s);
+    ull ans = 0;
+    for (int i = 0; i < len; i++)
+        ans = (ans * base + (ull)s[i])*114514 % mod;
+    return ans;
 }
-
-int fa[max_m];
-int n_node, m_edge;
-long long sum;
-
-int GetAndSetParent(int x)
-{
-	return x == fa[x] ? x : fa[x] = GetAndSetParent(fa[x]);
-}
-
 int main()
 {
-	cin >> n_node >> m_edge;
-	for (int i = 0; i <= n_node; i++)
-	{
-		fa[i] = i;
-	}
-	for (int i = 1; i <= m_edge; i++)
-	{
-		cin >> edge[i].x >> edge[i].y >> edge[i].z;
-	}
-
-	sort(edge + 1, edge + 1 + m_edge, cmp);
-	for (int i = 1; i <= m_edge; i++)
-	{
-		int x = GetAndSetParent(edge[i].x);
-		int y = GetAndSetParent(edge[i].y);
-		if (x == y)
-			continue;
-		fa[y] = x;
-		sum += edge[i].z;
-	}
-	int ans = 0;
-	for (int i = 1; i <= n_node; i++)
-	{
-		if (i == fa[i])
-			ans++;
-	}
-	if (ans > 1)
-		cout << "orz";
-	else
-		cout << sum;
-	return 0;
+    scanf("%d", &n);
+    for (int i = 0; i < n; i++)
+    {
+        scanf("%s", s);
+        a[i] = SetHash(s);
+    }
+    sort(a , a + n);
+    for (int i = 1; i < n; i++)
+    {
+        if (a[i] != a[i - 1])
+            ans++;
+    }
+        
+    cout << ans;
+    return 0;
 }
-
-
-

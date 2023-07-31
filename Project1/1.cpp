@@ -5,60 +5,60 @@
 #include <string.h>
 using namespace std;
 
-int n, m;
-int f[10005];
+const int max_m = 2e5 + 10;
 
-int SetParent(int cur, int parent)
+struct node {
+	int x, y, z;
+}edge[max_m];
+
+bool cmp(node a, node b)
 {
-	if (f[cur] != cur)
+	return a.z < b.z;
+}
+
+int fa[max_m];
+int n_node, m_edge;
+long long sum;
+
+int GetAndSetParent(int x)
+{
+	return x == fa[x] ? x : fa[x] = GetAndSetParent(fa[x]);
+}
+
+int main()
+{
+	cin >> n_node >> m_edge;
+	for (int i = 0; i <= n_node; i++)
 	{
-		f[cur] = SetParent(f[cur], parent);
+		fa[i] = i;
 	}
+	for (int i = 1; i <= m_edge; i++)
+	{
+		cin >> edge[i].x >> edge[i].y >> edge[i].z;
+	}
+
+	sort(edge + 1, edge + 1 + m_edge, cmp);
+	for (int i = 1; i <= m_edge; i++)
+	{
+		int x = GetAndSetParent(edge[i].x);
+		int y = GetAndSetParent(edge[i].y);
+		if (x == y)
+			continue;
+		fa[y] = x;
+		sum += edge[i].z;
+	}
+	int ans = 0;
+	for (int i = 1; i <= n_node; i++)
+	{
+		if (i == fa[i])
+			ans++;
+	}
+	if (ans > 1)
+		cout << "orz";
 	else
-	{
-		return f[cur] = parent;
-	}
-}
-int FindParent(int cur)
-{
-	if (f[cur] != cur)return FindParent(f[cur]);
-	return cur;
-}
-bool Check(int e1, int e2)
-{
-	return FindParent(e1) == FindParent(e2);
-}
-int main() 
-{
-	cin >> n >> m;
-	for (int i = 1; i <= n; i++)
-	{
-		f[i] = i;
-	}
-	for (int i = 1; i <= m; i++)
-	{
-		int cata, elem_1, elem_2;
-		cin >> cata >> elem_1 >> elem_2;
-		if (cata == 1)
-		{
-			if (!Check(elem_1, elem_2))
-			{
-				SetParent(elem_1, elem_2);
-			}
-		}
-		else if (cata == 2)
-		{
-			if (Check(elem_1, elem_2))cout << "Y" << endl;
-			else cout << "N" << endl;
-		}
-	}
+		cout << sum;
 	return 0;
 }
-
-
-
-
-
 
 
 

@@ -5,35 +5,37 @@
 #include <string.h>
 
 using namespace std;
-const int max_n = 100 + 10;
-const int max_m = 100 + 10;
-int n, m;
-int watered[max_n];
+const int max_n = 5e6 + 10;
+int n, p;
+int score[max_n];
+int t[max_n];
+int sum[max_n];
 int main()
 {
-    cin >> n >> m;
+    cin >> n >> p;
     for (int i = 1; i <= n; i++)
     {
-        watered[i] = 0;
+        t[i] = sum[i] = 0;
+        cin >> score[i];
     }
-    for(int i=0;i<m;i++)
+    t[n + 1] = sum[n + 1] = 0;
+    for (int i = 1; i <= p; i++)
     {
-        int day1, day2;
-        cin >> day1 >> day2;
-        for (int j = day1; j <= day2; j++)
-        {
-            watered[j] ++;
-        }
+        int s1, s2,added;
+        cin >> s1 >> s2 >> added;
+        t[s1] += added;
+        t[s2 + 1] -= added;
     }
+    int min = 114514;
+    int last_sum = 0;
     for (int i = 1; i <= n; i++)
     {
-        if (watered[i] != 1)
-        {
-            cout << i << " " << watered[i];
-            return 0;
-        }
+        last_sum += t[i];
+        score[i] += last_sum;
+        if (score[i] < min) 
+            min = score[i];
     }
-    cout << "OK";
+    cout << min;
     return 0;
 
 }

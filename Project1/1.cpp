@@ -5,37 +5,76 @@
 #include <string.h>
 
 using namespace std;
-const int max_n = 5e6 + 10;
-int n, p;
-int score[max_n];
-int t[max_n];
-int sum[max_n];
+const int max_n = 1e5 + 10;
+int n, m;
+struct Node
+{
+    Node* next;
+    Node* last;
+    int index;
+}stu[max_n];
+Node* start = (Node*)malloc(sizeof(Node));
+void Cut(int ID)
+{
+    
+    Node* cut = &stu[ID];
+    if (cut->last)
+    {
+        cut->last->next = cut->next;
+        cut->next->last = cut->last;
+        cut->last = cut->next = NULL;
+    }
+}
+void Add(int relayID, int addedID, bool isRight)
+{
+    Node* relay = &stu[relayID], * added = &stu[addedID];
+    if (!isRight)
+    {
+        added->next = relay;
+        added->last = relay->last;
+        added->last->next = added;
+        relay->last = added;
+    }
+    else
+    {
+        added->next = relay->next;
+        added->last = relay;
+        relay->next = added;
+        added->next->last = added;
+    }
+}
 int main()
 {
-    cin >> n >> p;
+    cin >> n;
     for (int i = 1; i <= n; i++)
     {
-        t[i] = sum[i] = 0;
-        cin >> score[i];
+        stu[i].index = i;
     }
-    t[n + 1] = sum[n + 1] = 0;
-    for (int i = 1; i <= p; i++)
+    Node* p_stu1 = &stu[1];
+    start->index = 0;
+    start->next = p_stu1;
+    start->last = p_stu1;
+    p_stu1->next = start;
+    p_stu1->last = start;
+    for (int i = 2; i <= n; i++)
     {
-        int s1, s2,added;
-        cin >> s1 >> s2 >> added;
-        t[s1] += added;
-        t[s2 + 1] -= added;
+        int ii, p;
+        cin >> ii >> p;
+        Add(ii,i, p);
     }
-    int min = 114514;
-    int last_sum = 0;
-    for (int i = 1; i <= n; i++)
+    cin >> m;
+    for (int i = 1; i <= m; i++)
     {
-        last_sum += t[i];
-        score[i] += last_sum;
-        if (score[i] < min) 
-            min = score[i];
+        int ii;
+        cin >> ii;
+        Cut(ii);
     }
-    cout << min;
+    Node* tranverse = start->next;
+    while (tranverse != start)
+    {
+        cout << tranverse->index << " ";
+        tranverse = tranverse->next;
+    }
     return 0;
 
 }

@@ -3,78 +3,75 @@
 #include <vector>
 #include <algorithm>
 #include <string.h>
-
+#include<queue>
 using namespace std;
-const int max_n = 1e5 + 10;
-int n, m;
-struct Node
+const int max_team = 1e3 + 10;
+const int max_teamer = 1e3 + 10;
+queue<int>queue_index_team;
+queue<int>queue_index_teamer[max_team];
+int count_team, count_teamer;
+int index_teamer[max_team][max_teamer];
+int myTeamIndex[1000000];
+void Clear()
 {
-    Node* next;
-    Node* last;
-    int index;
-}stu[max_n];
-Node* start = (Node*)malloc(sizeof(Node));
-void Cut(int ID)
-{
-    
-    Node* cut = &stu[ID];
-    if (cut->last)
+    while (!queue_index_team.empty())
+        queue_index_team.pop();
+    for (int i = 0; i < max_team; i++)
     {
-        cut->last->next = cut->next;
-        cut->next->last = cut->last;
-        cut->last = cut->next = NULL;
-    }
-}
-void Add(int relayID, int addedID, bool isRight)
-{
-    Node* relay = &stu[relayID], * added = &stu[addedID];
-    if (!isRight)
-    {
-        added->next = relay;
-        added->last = relay->last;
-        added->last->next = added;
-        relay->last = added;
-    }
-    else
-    {
-        added->next = relay->next;
-        added->last = relay;
-        relay->next = added;
-        added->next->last = added;
+        while (!queue_index_teamer[i].empty())
+            queue_index_teamer[i].pop();
     }
 }
 int main()
 {
-    cin >> n;
-    for (int i = 1; i <= n; i++)
+    int count_test = 1;
+    while (1)
     {
-        stu[i].index = i;
-    }
-    Node* p_stu1 = &stu[1];
-    start->index = 0;
-    start->next = p_stu1;
-    start->last = p_stu1;
-    p_stu1->next = start;
-    p_stu1->last = start;
-    for (int i = 2; i <= n; i++)
-    {
-        int ii, p;
-        cin >> ii >> p;
-        Add(ii,i, p);
-    }
-    cin >> m;
-    for (int i = 1; i <= m; i++)
-    {
-        int ii;
-        cin >> ii;
-        Cut(ii);
-    }
-    Node* tranverse = start->next;
-    while (tranverse != start)
-    {
-        cout << tranverse->index << " ";
-        tranverse = tranverse->next;
+        scanf("%d", &count_team);
+        if (count_team == 0)
+            return 0;
+        Clear();
+        cout << "Scenario #" << count_test << endl;
+        for (int i = 1; i <= count_team; i++)
+        {
+            cin >> count_teamer;
+            for (int j = 1; j <= count_teamer; j++)
+            {
+                cin >> index_teamer[i][j];
+                myTeamIndex[index_teamer[i][j]] = i;
+            }
+        }
+        
+        while (1)
+        {
+            char cata[20];
+            scanf("%s", cata);
+            if (cata[0] == 'S')
+            {
+                count_test++;
+                cout << endl;
+                break;
+            }
+            if (cata[0] == 'E')
+            {
+                int added;
+                scanf("%d", &added);
+                if (queue_index_teamer[myTeamIndex[added]].empty())
+                {
+                    queue_index_team.push(myTeamIndex[added]);
+                }
+                queue_index_teamer[myTeamIndex[added]].push(added);
+            }
+            if (cata[0] == 'D')
+            {
+                cout << queue_index_teamer[queue_index_team.front()].front() << endl;
+                queue_index_teamer[queue_index_team.front()].pop();
+                if (queue_index_teamer[queue_index_team.front()].empty())
+                {
+                    queue_index_team.pop();
+                }
+            }
+        }
     }
     return 0;
-
 }

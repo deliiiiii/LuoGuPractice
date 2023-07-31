@@ -5,37 +5,48 @@
 #include <string.h>
 
 using namespace std;
-const int max_n = 10000 + 10;
-const int max_k = 1000 + 10;
-int n, k;
-int nums[max_n];
+const int max_position = 100000 + 10;
+int n, q,m;
+struct Pos
+{
+    int index;
+    int num;
+}pos[max_position];
+bool Cmp(Pos x, Pos y)
+{
+    return x.num < y.num;
+}
+void HalfDivide()
+{
+    int left = 1, right = n;
+    while (left <= right)
+    {
+        int mid = (left + right) / 2;
+        if (m > pos[mid].num) 
+            left = mid + 1;
+        else 
+            right = mid - 1;
+    }
+    if (pos[left].num == m)
+        cout << pos[left].index << endl;
+    else
+        cout << "0" << endl;
+}
 int main()
 {
-    cin >> n >> k;
-    for (int i = 0; i < n; i++)
+    cin >> n;
+    for (int i = 1; i <= n; i++)
     {
-        nums[i] = 30001;
+        pos[i].index = i;
+        cin >> pos[i].num;
     }
-    for (int i = 0; i < n; i++)
+    sort(pos + 1, pos + 1 + n, Cmp);
+    cin >> q;
+    for (int i = 0; i < q; i++)
     {
-        cin >> nums[i];
+        cin >> m;
+        HalfDivide();
     }
-    sort(nums, nums + n);
-    int temp_k = 0;
-    for (int i = 0; i < n; i++)
-    {
-        
-        if (nums[i] == nums[i + 1])
-        {
-            continue;
-        }
-        temp_k++;
-        if (temp_k == k) 
-        {
-            cout << nums[i];
-            return 0;
-        }
-    }
-    cout << "NO RESULT";
     return 0;
+
 }

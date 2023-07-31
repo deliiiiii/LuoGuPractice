@@ -5,35 +5,37 @@
 #include <string.h>
 
 using namespace std;
-typedef unsigned long long ull;
-ull base = 131;
-ull a[10010];
-char s[10010];
-int n, ans = 1;
-ull mod = 212370440130137957ll;
-ull SetHash(char s[])
-{
-    int len = strlen(s);
-    ull ans = 0;
-    for (int i = 0; i < len; i++)
-        ans = (ans * base + (ull)s[i])*114514 % mod;
-    return ans;
-}
+const int max_n = 10000 + 10;
+const int max_k = 1000 + 10;
+int n, k;
+int nums[max_n];
 int main()
 {
-    scanf("%d", &n);
+    cin >> n >> k;
     for (int i = 0; i < n; i++)
     {
-        scanf("%s", s);
-        a[i] = SetHash(s);
+        nums[i] = 30001;
     }
-    sort(a , a + n);
-    for (int i = 1; i < n; i++)
+    for (int i = 0; i < n; i++)
     {
-        if (a[i] != a[i - 1])
-            ans++;
+        cin >> nums[i];
     }
+    sort(nums, nums + n);
+    int temp_k = 0;
+    for (int i = 0; i < n; i++)
+    {
         
-    cout << ans;
+        if (nums[i] == nums[i + 1])
+        {
+            continue;
+        }
+        temp_k++;
+        if (temp_k == k) 
+        {
+            cout << nums[i];
+            return 0;
+        }
+    }
+    cout << "NO RESULT";
     return 0;
 }

@@ -2,41 +2,67 @@
 #include<iostream>
 #include<vector>
 #include<algorithm>
+
+#include<cstring>
 using namespace std;
 const int max_n = 1 * 1e6 + 10;
-#include<cstring>
-int my_next[max_n];
-int length_a, length_b, j=0;
-char a[max_n], b[max_n];
-int main()
+int n;
+
+
+struct TreeNode
 {
-    cin >> a + 1;
-    cin >> b + 1;
-    length_a = strlen(a + 1);
-    length_b = strlen(b + 1);
-    for (int i = 2; i <= length_b; i++)
+    int index;
+    TreeNode* left;
+    TreeNode* right;
+};
+TreeNode* node[max_n];
+void AddArc(int father,int n1, int n2)
+{
+    if (n1 != 0)
     {
-        while (j && b[i] != b[j + 1])
-            j = my_next[j];
-        if ((b+1)[j] == (b + 1)[i-1])
-            j++;
-        my_next[i] = j;
+        node[father]->left = node[n1];
     }
-    j = 0;
-    for (int i = 1; i <= length_a; i++)
+     
+    if (n2 != 0)
     {
-        while (j > 0 && (b + 1)[j] != a[i])
-            j = my_next[j];
-        if ((b + 1)[j] == a[i])
-            j++;
-        if (j == length_b)
-        { 
-            cout << i - length_b + 1 << endl; 
-            j = my_next[j];
-        }
+        node[father]->right = node[n2];
+    }
+    
+}
+int Btdepth(TreeNode * T) {
+    if (T == NULL)
+        return 0;
+    int ldep = Btdepth(T->left);
+    int rdep = Btdepth(T->right);
+    if (ldep > rdep)
+        return ldep + 1;
+    else
+        return rdep + 1;
+}
+int main() 
+{
+    
+    cin >> n;
+    for (int i = 1; i <= n; i++)
+    {
+        node[i] = (TreeNode*)malloc(sizeof(TreeNode));
+        node[i]->index = i;
+        node[i]->left = NULL;
+        node[i]->right = NULL;
+    }
+    int n1, n2;
+    for (int i = 1; i <= n; i++)
+    {
+        cin >> n1 >> n2;
+        AddArc(i,n1, n2);
     }
 
-    for (int i = 1; i <= length_b; i++)
-        cout << my_next[i] << " ";
-    return 0;
+    cout << Btdepth(node[1]) << endl;
+
+	return 0;
 }
+
+
+
+
+

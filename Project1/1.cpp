@@ -2,41 +2,41 @@
 #include<iostream>
 #include<vector>
 #include<algorithm>
-#include<queue>
 using namespace std;
 const int max_n = 1 * 1e6 + 10;
-int Work()
-{
-    string s;
-    char c, temp;
-    int num, ans = 0;
-    while (cin >> c)
-    {
-        if (c == ']') break;//REPEAT n[]
-        cin >> s >> num;
-        if (c == 'R')
-        {
-            temp = getchar();//[
-            ans += num * Work();
-            temp = getchar();//¶Á']'ºó' '.
-        }
-        else if (c == 'B') 
-        {
-            temp = getchar(), ans -= num;
-        }
-        else if (c == 'F') 
-        {
-            temp = getchar(), ans += num;
-        }
-        if (temp == int(']'))
-        {
-            break;
-        }
-    }
-    return ans;
-}
+#include<cstring>
+int my_next[max_n];
+int length_a, length_b, j=0;
+char a[max_n], b[max_n];
 int main()
 {
-    cout << abs(Work());
+    cin >> a + 1;
+    cin >> b + 1;
+    length_a = strlen(a + 1);
+    length_b = strlen(b + 1);
+    for (int i = 2; i <= length_b; i++)
+    {
+        while (j && b[i] != b[j + 1])
+            j = my_next[j];
+        if ((b+1)[j] == (b + 1)[i-1])
+            j++;
+        my_next[i] = j;
+    }
+    j = 0;
+    for (int i = 1; i <= length_a; i++)
+    {
+        while (j > 0 && (b + 1)[j] != a[i])
+            j = my_next[j];
+        if ((b + 1)[j] == a[i])
+            j++;
+        if (j == length_b)
+        { 
+            cout << i - length_b + 1 << endl; 
+            j = my_next[j];
+        }
+    }
+
+    for (int i = 1; i <= length_b; i++)
+        cout << my_next[i] << " ";
     return 0;
 }

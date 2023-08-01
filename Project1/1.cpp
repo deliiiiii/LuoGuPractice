@@ -5,8 +5,8 @@
 
 #include<cstring>
 using namespace std;
-const int max_n = 1 * 1e6 + 10;
-int n;
+const int max_n = 1 * 1e2 + 10;
+
 
 
 struct TreeNode
@@ -14,22 +14,23 @@ struct TreeNode
     int index;
     TreeNode* left;
     TreeNode* right;
+    TreeNode* father;
 };
 TreeNode* node[max_n];
-void AddArc(int father,int n1, int n2)
+void AddArc(int n1, int n2)
 {
-    if (n1 != 0)
+    if (!node[n1]->left)
     {
-        node[father]->left = node[n1];
+        node[n1]->left = node[n2];
+        node[n2]->father = node[n1];
     }
-     
-    if (n2 != 0)
+    else
     {
-        node[father]->right = node[n2];
+        node[n1]->right = node[n2];
+        node[n2]->father = node[n1];
     }
-    
 }
-int Btdepth(TreeNode * T) {
+int Btdepth(TreeNode* T) {
     if (T == NULL)
         return 0;
     int ldep = Btdepth(T->left);
@@ -39,9 +40,39 @@ int Btdepth(TreeNode * T) {
     else
         return rdep + 1;
 }
-int main() 
+int  my_count[100];
+int max_width = -1;
+
+void FindWidth(TreeNode* T, int k)
 {
-    
+    if (T == NULL)
+        return;
+    my_count[k]++;
+    if (max_width < my_count[k])
+        max_width = my_count[k];
+    FindWidth(T->left, k + 1);
+    FindWidth(T->right, k + 1);
+}
+
+//MAX即为所求宽度
+TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q)
+{
+    if (root == p || root == q || !root)return root;
+
+    TreeNode* left = lowestCommonAncestor(root->left, p, q);
+    TreeNode* right = lowestCommonAncestor(root->right, p, q);
+
+    if (!left && !right)return NULL;
+    else if (left && !right)return left;
+    else if (right && !left)return right;
+
+    return root;
+}
+
+int n;
+int main()
+{
+
     cin >> n;
     for (int i = 1; i <= n; i++)
     {
@@ -49,20 +80,32 @@ int main()
         node[i]->index = i;
         node[i]->left = NULL;
         node[i]->right = NULL;
+        node[i]->father = NULL;
     }
     int n1, n2;
-    for (int i = 1; i <= n; i++)
+    for (int i = 1; i <= n - 1; i++)
     {
         cin >> n1 >> n2;
-        AddArc(i,n1, n2);
+        AddArc(n1, n2);
     }
-
+    cin >> n1 >> n2;
+    int target = lowestCommonAncestor(node[1], node[n1], node[n2])->index;
+    int ans = 0;
+    TreeNode* t1 = node[n1];
+    TreeNode* t2 = node[n2];
+    while (t1->index != target)
+    {
+        t1 = t1->father;
+        ans += 2;
+    }
+    while (t2->index != target)
+    {
+        t2 = t2->father;
+        ans += 1;
+    }
     cout << Btdepth(node[1]) << endl;
-
-	return 0;
+    FindWidth(node[1], 1);
+    cout << max_width << endl;
+    cout << ans;
+    return 0;
 }
-
-
-
-
-

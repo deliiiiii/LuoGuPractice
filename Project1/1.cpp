@@ -60,22 +60,22 @@ int CreateGraph(ALGraph& m_G, DotNode m_V[], KeyType m_VR[][3])
     }
     for (int i = 1; m_VR[i][0] != -1; i++)
     {
-        int n1 = 0, n2 = 0;
-        for (; n1 < m_G.vexnum; n1++)
-        {
-            if (m_G.dots[n1].data.key == m_VR[i][0])
-            {
-                break;                                      //找到了顶点
-            }
-        }
-        //if (n1 == m_G.vexnum) return ERROR;
-        for (; n2 < m_G.vexnum; n2++)
-        {
-            if (m_G.dots[n2].data.key == m_VR[i][1])
-            {
-                break;                                      //找到了顶点
-            }
-        }
+        int n1 = m_VR[i][0], n2 = m_VR[i][1];
+        //for (; n1 < m_G.vexnum; n1++)
+        //{
+        //    if (m_G.dots[n1].data.key == m_VR[i][0])
+        //    {
+        //        break;                                      //找到了顶点
+        //    }
+        //}
+        ////if (n1 == m_G.vexnum) return ERROR;
+        //for (; n2 < m_G.vexnum; n2++)
+        //{
+        //    if (m_G.dots[n2].data.key == m_VR[i][1])
+        //    {
+        //        break;                                      //找到了顶点
+        //    }
+        //}
         //if (n2 == m_G.vexnum) return ERROR;
 
         m_G.arcnum++;

@@ -8,73 +8,102 @@
 #include<math.h>
 using namespace std;
 
-const int max_n = 1 * 1e1 + 10;
-const int max_m = 1 * 1e1 + 10;
-int n, m,index_root;
-int count_slash[max_n] = { 0,1,2,5,11,23,47,95,191,383,767 };
-int deep[max_n] = { 0,1,3,8,19,42,89,184,375,758,1525 };
-char picture[2001][2001];
-bool isDeleted[40000001];
-void SetPicture(int k, int depth, int x, int y)
+const int max_length = 1 * 1e2 + 10;
+const int max_count_colored = 1 * 1e3 + 10;
+int length, count_colored;
+int color[max_length][max_length];
+int direct1[4] = { 0,0,1,-1 }, direct2[4] = { 1,-1,0,0 };
+int my_min = 0x7fffffff;
+int minAtGrid[max_length][max_length];
+bool notVisited[max_length][max_length];
+void Search(int x, int y, int expense, int temp_color)
 {
-	if (isDeleted[k] == 1) return;
-	if (depth > n) return;
-	picture[x][y] = 'o';
-	if (!isDeleted[k * 2] && !(depth >= n))
-	{
-		int x1 = x, y1 = y;
-		for (int i = 1; i <= count_slash[n - depth]; i++)
-		{
-			x1--;
-			y1++;
-			picture[x1][y1] = '/';
-		}
-		SetPicture(k * 2, depth + 1, x1 - 1, y1 + 1);
-	}
-	if (!isDeleted[k << 1 | 1] && !(depth >= n))
-	{
-		int x2 = x, y2 = y;
-		for (int i = 1; i <= count_slash[n - depth]; i++)
-		{
-			x2++;
-			y2++;
-			picture[x2][y2] = '\\';
-		}
-		SetPicture(k * 2 + 1, depth + 1, x2 + 1, y2 + 1);
-	}
+    if ((x == length) && (y == length))
+    {
+        my_min = min(expense, my_min);
+        return;
+    }
+    for (int i = 0; i < 4; i++) 
+    {
+        int p = x + direct1[i], q = y + direct2[i];
+        if (!  (  (p <= length) && (p > 0) && (q <= length) && (q > 0)  )  ) //超出边界 
+        {
+            continue;
+        }
+        if (!notVisited[p][q])//走过
+        {
+            continue;
+        }
+        if ((color[x][y] == 0 && color[p][q] == 0))//两个都无色
+        {
+            continue;
+        }
+        if (color[p][q] == 0)
+        {
+            if (expense + 2 < minAtGrid[p][q])//目标点无色且花费更少
+            {
+                notVisited[p][q] = 0;
+                minAtGrid[p][q] = expense + 2;
+                Search(p, q, expense + 2, temp_color);
+                notVisited[p][q] = 1;
+                continue;
+            }
+            continue;
+        }
+            
+        //目标点有色
+        if ((temp_color == color[p][q]) && (expense < minAtGrid[p][q]))//同色且花费更少
+        {
+            notVisited[p][q] = 0;
+            minAtGrid[p][q] = expense;
+            Search(p, q, expense, temp_color);
+            notVisited[p][q] = 1;
+        }
+        else if ((expense + 1 < my_min) && (expense + 1 < minAtGrid[p][q])) //不同色且花费更少      
+        {
+            notVisited[p][q] = 0;
+            minAtGrid[p][q] = expense + 1;
+            Search(p, q, expense + 1, color[p][q]);
+            notVisited[p][q] = 1;
+        }
+    }
 }
 void Init()
 {
-	for (int i = 1; i <= 2000; i++)
-	{
-		for (int j = 1; j <= 2000; j++)
-		{
-			picture[i][j] = ' ';
-		}
-	}
+    for (int i = 1; i <= length; i++)
+    {
+        for (int j = 1; j <= length; j++)
+        {
+            minAtGrid[i][j] = 0x7fffffff;
+            color[i][j] = 0;
+            notVisited[i][j] = 1;//1:未走
+        }
+    }
 }
-void Print()
+void SetColor()
 {
-	for (int i = 1; i <= deep[n]; i++)
-	{
-		for (int j = 1; j <= index_root * 2; j++)
-		{
-			cout << picture[j][i];
-		}
-		cout << endl;
-	}
+    for (int i = 1; i <= count_colored; i++)
+    {
+        int x, y, temp_color;
+        scanf("%d%d%d", &x, &y, &temp_color);
+        color[x][y] = temp_color + 1; //有色:1、2... 无色:0 
+    }
 }
+
 int main()
 {
-	Init();
-	cin >> n >> m;
-	for (int i = 1; i <= m; i++)
-	{
-		int a, b;
-		cin >> a >> b;
-		isDeleted[int(pow(2, a - 1) - 1 + b)] = 1;
-	}
-	index_root = pow(2, n - 1) * 6 / 4;
-	SetPicture(1, 1, index_root, 1);
-	Print();
+    cin >> length >> count_colored;
+    Init();
+    SetColor();
+    notVisited[1][1] = 0;
+    Search(1, 1, 0, color[1][1]);
+    if (my_min == 0x7fffffff)
+    {
+        printf("-1");
+        return 0;
+    }
+    printf("%d", my_min);
+    return 0;
 }
+
+

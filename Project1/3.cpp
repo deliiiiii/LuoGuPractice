@@ -8,87 +8,54 @@
 #include<vector>
 #include<stack>
 #include<queue>
+#include<map>
 using namespace std;
-const int max_n = 1 * 1e2 + 10;
-struct Edge
-{
-	int target;
-	int value;
-	int next;
-} edge[max_n * max_n];
-struct Answer
-{
-	int index;
-} ans[max_n];
-int m, n;
-int temp_this, temp_target, Upmost,count_edge = 0;
-int cum[max_n], linearForwardStar[max_n], visited[max_n];
-queue <int> que;
-bool didPrint = 0 , isOutDot[max_n];
-bool cmp(Answer x, Answer y)
-{
-	return x.index < y.index;
-}
-void SetEdge(int u, int v, int w)
-{
-	
-	count_edge++;
-	edge[count_edge].target = v;
-	edge[count_edge].value = w;
-	edge[count_edge].next = linearForwardStar[u];
-	linearForwardStar[u] = count_edge;
-}
+
+map<string, int>sum;//次数
+map<string, bool>flag;//1:想背
+int ans1, ans2, target_word, count_word_in_article;
+string s[100005], temp_s;
 int main()
 {
-	scanf("%d%d", &n, &m);
-	for (int i = 1; i <= n; i++)
+	cin >> target_word;
+	for (int i = 1; i <= target_word; i++)
 	{
-		visited[i] = isOutDot[i] = 0;
-		scanf("%d%d", &cum[i], &Upmost);
-		if (cum[i] > 0)
+		cin >> temp_s;
+		flag[temp_s] = 1;
+	}
+		
+	cin >> count_word_in_article;
+	int l = 1;
+	for (int i = 1; i <= count_word_in_article; i++)
+	{
+		cin >> s[i];
+		if (flag[s[i]])//要背
 		{
-			que.push(i); 
-			visited[i] = 1;
+			sum[s[i]]++;
 		}
-		else cum[i] -= Upmost;
-	}
-	for (int i = 1; i <= m; i++)
-	{
-		int u, v, w;
-		scanf("%d%d%d", &u, &v, &w);
-		SetEdge(u, v, w);
-		isOutDot[u] = 1;
-	}
-	while (!que.empty())
-	{
-		temp_this = que.front();
-		que.pop();
-		if (cum[temp_this] <= 0) 
-			continue;
-		for (int i = linearForwardStar[temp_this]; i; i = edge[i].next)
+		if (sum[s[i]] == 1)//新出现
 		{
-			temp_target = edge[i].target;
-			cum[temp_target] += edge[i].value * cum[temp_this];
-			if (!visited[temp_target])
+			ans1++;
+			ans2 = i - l + 1;//更新长度
+		}
+		while (l <= i)
+		{
+			if (!flag[s[l]])//不要背
 			{
-				que.push(temp_target);
-				visited[temp_target] = 1;
+				l++; 
+				continue; 
 			}
+			if (sum[s[l]] >= 2)//重复出现
+			{
+				sum[s[l]]--;
+				l++; 
+				continue;
+			}
+			break;
 		}
+		ans2 = min(ans2, i - l + 1);//更新
 	}
-	for (int i = 1; i <= n; i++)
-	{
-		if (!isOutDot[i] && cum[i] > 0)
-		{
-			printf("%d %d\n", i, cum[i]);
-			didPrint = 1;
-		}
-	}
-
-	if (!didPrint)
-	{
-		cout << "NULL";
-	}
+	cout << ans1 << endl;
+	cout << ans2 << endl;
 	return 0;
 }
-

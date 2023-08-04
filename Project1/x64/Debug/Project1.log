@@ -1,3 +1,5 @@
 ﻿  2.cpp
+D:\SAVE\code\C++\LuoGuPractice\Project1\2.cpp(9,27): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
 D:\SAVE\code\C++\LuoGuPractice\Project1\2.cpp(10,27): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+  LINK : 没有找到 D:\SAVE\code\C++\LuoGuPractice\Project1\x64\Debug\Project1.exe 或上一个增量链接没有生成它；正在执行完全链接
   Project1.vcxproj -> D:\SAVE\code\C++\LuoGuPractice\Project1\x64\Debug\Project1.exe

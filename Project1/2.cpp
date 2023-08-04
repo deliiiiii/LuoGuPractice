@@ -2,31 +2,69 @@
 #include<iostream>
 #include<vector>
 #include<queue>
+#include<stack>
 #include<algorithm>
 #include<cstring>
 using namespace std;
 
-const int max_n = 1 * 1e4 + 10;
-const int max_a = 2 * 1e4 + 10;
-int n, temp, ans = 0;
-priority_queue<int, vector<int>, greater<int> >q;
-int main() 
+const int max_n = 1 * 1e5 + 10;
+int n;
+struct node {
+	int index, m_height;
+};
+stack<node> stac;
+int height[max_n], ans;
+int myleft[max_n], myright[max_n];
+void clean()
 {
+	while (!stac.empty())
+		stac.pop();
+}
+int main()
+{
+	int i, j;
 	cin >> n;
-	for (int i = 1; i <= n; i++)
+	for (i = 1; i <= n; i++)
 	{
-		cin >> temp;
-		q.push(temp);
+		cin >> height[i];
 	}
-	while (q.size() >= 2) 
+	for (i = 1; i <= n; i++)
 	{
-		int num1 = q.top();
-		q.pop();
-		int num2 = q.top();
-		q.pop();
-		ans += num1 + num2;
-		q.push(num1 + num2);
+		while (!stac.empty() && stac.top().m_height < height[i])
+			stac.pop();
+		if (!stac.empty())
+			myleft[i] = stac.top().index;
+		else myleft[i] = 0;
+		node t;
+		t.m_height = height[i];
+		t.index = i;
+		stac.push(t);
 	}
-	cout << ans << endl;
+	clean();
+	for (i = n; i >= 1; i--)
+	{
+		while (!stac.empty() && stac.top().m_height > height[i])
+			stac.pop();
+		if (!stac.empty())
+			myright[i] = stac.top().index;
+		else myright[i] = n + 1;
+		node t;
+		t.m_height = height[i];
+		t.index = i;
+		stac.push(t);
+	}
+	for (i = n; i >= 1; i--)
+	{
+		for (j = myleft[i] + 1; j < i; j++)
+		{
+			if (myright[j] > i)
+			{
+				ans = max(ans, i - j + 1);
+				break;
+			}
+		}
+		if (i <= ans) break;
+	}
+	cout << ans;
 	return 0;
 }

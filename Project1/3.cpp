@@ -11,51 +11,42 @@
 #include<map>
 using namespace std;
 
-map<string, int>sum;//次数
-map<string, bool>flag;//1:想背
-int ans1, ans2, target_word, count_word_in_article;
-string s[100005], temp_s;
+const int N = 500010;
+int head[N], ver[N], next[N], tot, n, st, edge[N];
+long long ans, dis[N];
+void add(int x, int y, int z)//建图
+{
+	ver[++tot] = y;
+	edge[tot] = z;
+	next[tot] = head[x];
+	head[x] = tot;
+}
+void dfs(int x, int fa)
+{
+	for (int i = head[x]; i; i = next[i])
+	{
+		int y = ver[i], z = edge[i];
+		if (y == fa) continue;
+		dfs(y, x);//继续搜子树
+		dis[x] = max(dis[x], dis[y] + z); //更新这棵子树根节点和叶子节点的最大距离
+	}
+	for (int i = head[x]; i; i = next[i])
+	{
+		int y = ver[i], z = edge[i];
+		if (y == fa) continue;
+		ans += dis[x] - (dis[y] + z);//累加每次调整的代价
+	}
+}
 int main()
 {
-	cin >> target_word;
-	for (int i = 1; i <= target_word; i++)
+	scanf("%d%d", &n, &st);
+	for (int i = 1; i < n; i++)
 	{
-		cin >> temp_s;
-		flag[temp_s] = 1;
+		int x, y, z;
+		scanf("%d%d%d", &x, &y, &z);
+		add(x, y, z); add(y, x, z);//注意双向边
 	}
-		
-	cin >> count_word_in_article;
-	int l = 1;
-	for (int i = 1; i <= count_word_in_article; i++)
-	{
-		cin >> s[i];
-		if (flag[s[i]])//要背
-		{
-			sum[s[i]]++;
-		}
-		if (sum[s[i]] == 1)//新出现
-		{
-			ans1++;
-			ans2 = i - l + 1;//更新长度
-		}
-		while (l <= i)
-		{
-			if (!flag[s[l]])//不要背
-			{
-				l++; 
-				continue; 
-			}
-			if (sum[s[l]] >= 2)//重复出现
-			{
-				sum[s[l]]--;
-				l++; 
-				continue;
-			}
-			break;
-		}
-		ans2 = min(ans2, i - l + 1);//更新
-	}
-	cout << ans1 << endl;
-	cout << ans2 << endl;
+	dfs(st, 0);
+	printf("%lld", ans);
 	return 0;
 }

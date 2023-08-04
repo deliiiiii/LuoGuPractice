@@ -1,87 +1,63 @@
-//#define _CRT_SECURE_NO_WARNINGS
-//#include<iostream>
-//#include<algorithm>
-//#include<cstdio>
-//#include<cstring>
-//#include<math.h>
-//
-//#include<vector>
-//#include<stack>
-//#include<queue>
-//using namespace std;
-//const int N = 1 * 1e2 + 10;
-//struct edge 
-//{
-//	int to;
-//	int val;
-//	int nxt;
-//} e[N * N];
-//struct answer 
-//{
-//	int id;
-//} ans[N];
-//int h, i, m, n, t, u, v, w, U, c[N], hd[N], out[N], vis[N];
-//queue <int> que;
-//int cnt = 0, flag = 0;
-//bool cmp(answer aa, answer bb)
-//{
-//	return aa.id < bb.id;
-//}
-//void build(int u, int v, int w)
-//{
-//	cnt++;
-//	e[cnt].to = v;
-//	e[cnt].val = w;
-//	e[cnt].nxt = hd[u];
-//	hd[u] = cnt;
-//}
-//int main()
-//{
-//	scanf("%d%d", &n, &m);
-//	for (i = 1; i <= n; i++)
-//	{
-//		vis[i] = out[i] = 0;
-//		scanf("%d%d", &c[i], &U);
-//		if (c[i] > 0)
-//		{
-//			que.push(i); vis[i] = 1;
-//		}
-//		else c[i] -= U;
-//	}
-//	for (i = 1; i <= m; i++)
-//	{
-//		scanf("%d%d%d", &u, &v, &w);
-//		build(u, v, w);
-//		out[u] = 1;//out表示有无出边，用于最后找输出层
-//	}
-//	while (!que.empty())
-//	{
-//		h = que.front(); que.pop();
-//		if (c[h] <= 0) continue;
-//		for (i = hd[h]; i; i = e[i].nxt)
-//		{
-//			t = e[i].to;
-//			c[t] += e[i].val * c[h];
-//			if (!vis[t])
-//			{
-//				que.push(t);
-//				vis[t] = 1;
-//			}
-//		}
-//	}
-//	for (i = 1; i <= n; i++)
-//	{
-//		if (!out[i] && c[i] > 0)
-//		{
-//			printf("%d %d\n", i, c[i]);
-//			flag = 1;
-//		}
-//	}
-//		
-//	if (!flag) 
-//	{
-//		cout << "NULL";
-//	}
-//	return 0;
-//}
-//
+#define _CRT_SECURE_NO_WARNINGS
+#include<iostream>
+#include<algorithm>
+#include<cstdio>
+#include<cstring>
+#include<math.h>
+
+#include<vector>
+#include<stack>
+#include<queue>
+#include<map>
+using namespace std;
+
+const int max_n = 500010;
+int n, count_dot, index_start;
+int head[max_n], index_dot[max_n], next_edge[max_n],  edge_length[max_n];
+long long int ans = 0, my_distance[max_n];
+void Add(int x, int y, int z)
+{
+	index_dot[++count_dot] = y;
+	edge_length[count_dot] = z;
+	next_edge[count_dot] = head[x];
+	head[x] = count_dot;
+}
+void DFS(int x, int index_father)
+{
+	for (int dot_this = head[x]; dot_this; dot_this = next_edge[dot_this])
+	{
+		int y = index_dot[dot_this];
+		int z = edge_length[dot_this];
+		if (y == index_father) 
+			continue;
+		DFS(y, x);
+		my_distance[x] = max(my_distance[x], my_distance[y] + z);
+	}
+	for (int dot_this = head[x]; dot_this; dot_this = next_edge[dot_this])
+	{
+		int y = index_dot[dot_this];
+		int z = edge_length[dot_this];
+		if (y == index_father) 
+			continue;
+		ans += my_distance[x] - (my_distance[y] + z);
+	}
+}
+
+void Input()
+{
+	scanf("%d%d", &n, &index_start);
+	for (int i = 1; i < n; i++)
+	{
+		int x, y, z;
+		scanf("%d%d%d", &x, &y, &z);
+		Add(x, y, z); 
+		Add(y, x, z);
+	}
+}
+int main()
+{
+	Input();
+	DFS(index_start, 0);
+	printf("%lld", ans);
+	return 0;
+}

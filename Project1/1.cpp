@@ -6,38 +6,47 @@
 #include<cstring>
 using namespace std; 
 
-const int max_n = 1 * 1e2 + 10;
-const int max_m = 1 * 1e4 + 10;
-int n, m, ans = 0;
-int dis[101][101], a[10001];
+const int max_n = 5 * 1e5 + 10;
+struct node
+{
+    int val, num;
+}a[max_n];
+int n;
+long long ans = 0;
+int c[max_n];
+void add(int x, int k)
+{
+    for (int i = x; i <= n; i += i & (-i)) 
+        c[i] += k;
+}
+int query(int x)
+{
+    int sum = 0;
+    for (int i = x; i > 0; i -= i & (-i))
+        sum += c[i];
+    return sum;
+}
+int cmp(node x, node y)
+{ 
+    if (x.val == y.val) 
+        return x.num > y.num; 
+    return x.val > y.val; 
+}
+
 int main()
 {
-	cin >> n >> m;
-	for (int i = 1; i <= m; i++)
-	{
-		scanf("%d", &a[i]);
-	}
-	for (int i = 1; i <= n; i++)
-	{
-		for (int j = 1; j <= n; j++)
-		{
-			scanf("%d", &dis[i][j]);
-		}
-	}
-	for (int k = 1; k <= n; k++)
-	{
-		for (int i = 1; i <= n; i++)
-		{
-			for (int j = 1; j <= n; j++)
-			{
-				dis[i][j] = min(dis[i][k] + dis[k][j], dis[i][j]);
-			}
-		}
-	}
-	for (int i = 2; i <= m; i++)
-	{
-		ans += dis[a[i - 1]][a[i]];
-	}
-	cout << ans;
-	return 0;
+    cin >> n;
+    for (int i = 1; i <= n; i++)
+    {
+        scanf("%d", &a[i].val);
+        a[i].num = i;
+    }
+    stable_sort(a + 1, a + n + 1, cmp);
+    for (int i = 1; i <= n; i++)
+    {
+        add(a[i].num, 1);
+        ans += query(a[i].num - 1);
+    }
+    cout << ans << endl;
+    return 0;
 }
